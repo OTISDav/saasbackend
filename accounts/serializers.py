@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from .models import CustomUser
+from django.contrib.auth import authenticate
+
 
 class RegisterUserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -19,19 +21,20 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         return user
 
 class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
+    username = serializers.CharField(required=True)
     password = serializers.CharField(write_only=True)
 
     def validate(self, data):
         username = data.get('username')
         password = data.get('password')
 
-        # Rechercher l'utilisateur par nom
-        user = CustomUser.objects.filter(username=username).first()
+        if username and password:
+            # Utilise la méthode authenticate pour valider l'utilisateur
+            user = authenticate(username=username, password=password)
+            if not user:
+                raise serializers.ValidationError("Identifiants incorrects. Veuillez réessayer.")
+        else:
+            raise serializers.ValidationError("Le nom d'utilisateur et le mot de passe sont obligatoires.")
 
-        if user and user.check_password(password):
-            if not user.is_active:
-                raise serializers.ValidationError("Ce compte est désactivé.")
-            return {'user': user}
-
-        raise serializers.ValidationError("Les identifiants sont incorrects.")
+        data['user'] = user
+        return data

@@ -12,22 +12,25 @@ class RegisterUserView(generics.CreateAPIView):
 
 class LoginView(APIView):
     permission_classes = [AllowAny]
+    serializer_class = LoginSerializer
 
     def post(self, request):
-        serializer = LoginSerializer(data=request.data)
+        serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            user = serializer.validated_data['user']
-            refresh = RefreshToken.for_user(user)
+            utilisateur = serializer.validated_data['user']
+            refresh = RefreshToken.for_user(utilisateur)
             return Response({
                 'message': 'Connexion réussie',
-                'user': {
-                    'id': user.id,
-                    'username': user.username,
+                'utilisateur': {
+                    'id': utilisateur.id,
+                    'nom_utilisateur': utilisateur.username,
                 },
                 'tokens': {
                     'refresh': str(refresh),
                     'access': str(refresh.access_token),
                 },
             }, status=status.HTTP_200_OK)
+        else:
+            # Affiche les erreurs pour comprendre ce qui ne va pas
+            print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
