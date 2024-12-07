@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'accounts',
     'videodownloader',
     'social_media',
+    'cannal',
 ]
 
 REST_FRAMEWORK = {
@@ -106,18 +107,14 @@ WSGI_APPLICATION = "mysaas.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'saas',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '3306',
-        'OPTIONS': {
-            'charset': 'utf8mb4',
-        },
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'saas',  # Nom de la base de données
+        'USER': 'postgres',  # Nom d'utilisateur
+        'PASSWORD': 'Otis2003',  # Mot de passe
+        'HOST': 'localhost',  # Host de la base de données
+        'PORT': '5432',  # Port
     }
 }
 

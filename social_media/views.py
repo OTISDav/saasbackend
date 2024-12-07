@@ -13,20 +13,25 @@ from .serializers import SocialMediaPostSerializer
 def publish_to_twitter(request):
     message = request.data.get('message')
 
+
     if not message:
         return Response({"error": "Le message est requis."}, status=status.HTTP_400_BAD_REQUEST)
 
     # Détails de l'authentification Twitter
-    access_token = "1453983449262530564-gcC4sJqfWpi9LoK2VcEk2abLmqEen8"
-    access_token_secret = "ayXKkqubjY1sPhFSmYTd6hmFmyXSnspQQN793s25Onpgc"
-    consumer_key = "YRsItz3ap8CM1uW4dISQuVwsL"
-    consumer_secret = "mZyTaofRb2fqLKMgwBfSLkmWMJpEIHX8FgX9kqkqQDCDta4ynC"
+    access_token = "1453983449262530564-VH3U9RaytwtWyY121I0PzmDeXHX3Nj"
+    access_token_secret = "Y1WQYN9eLcjRd1PqjopoDby2QkUKb9yf9dwnwnDfBkqbq"
+    consumer_key = "aogVgtaRd02gaCHnUmwgMdx4O"
+    consumer_secret = "QXkGFIVT3zbtmHNi8ubuIQK8gib9liHYtZC9uvAUH80XNUELyZ"
 
     # Appel à l'API Twitter
-    url = "https://api.twitter.com/1.1/statuses/update.json"
+    url = "https://api.twitter.com/2/tweets/update.json"
     auth = OAuth1(consumer_key, consumer_secret, access_token, access_token_secret)
     payload = {'status': message}
     response = requests.post(url, auth=auth, params=payload)
+
+
+    # Log pour voir la réponse de Twitter
+    print(response.status_code, response.json())
 
     if response.status_code == 200:
         # Créer l'objet SocialMediaPost

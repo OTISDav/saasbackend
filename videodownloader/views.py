@@ -28,9 +28,11 @@ def download_video(request):
     # Utilisation de yt-dlp pour obtenir des informations sur la vidéo et la télécharger
     try:
         ydl_opts = {
-            'format': 'best',
-            'outtmpl': f'{downloads_dir}/%(title)s.%(ext)s'  # Sauvegarde dans le dossier "OtisTelechargement"
+            'format': 'bestvideo[height<=1080]+bestaudio/best[height<=1080]',
+            'outtmpl': f'{downloads_dir}/%(title)s.%(ext)s',
+            'merge_output_format': 'mp4'
         }
+
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             info_dict = ydl.extract_info(url, download=True)  # Télécharger la vidéo
             video_title = info_dict.get('title', None)
