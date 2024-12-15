@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from .models import CanalTelegram, VenteCanal, Transaction
 from .serializers import CanalTelegramSerializer
 from django.utils import timezone
+from rest_framework.permissions import IsAuthenticated  # Permet à tout le monde d'accéder à cette vue
 
 
 # Vue pour la Création d'un Canal
@@ -11,9 +12,9 @@ class CanalCreateView(APIView):
     def post(self, request):
         # Ajouter automatiquement le propriétaire comme utilisateur authentifié
         data = request.data.copy()
-        data['proprietaire'] = request.user.id  # Associer le canal à l'utilisateur connecté
+        data['proprietaire'] = request.user.id  # Utilisez l'ID de l'utilisateur pour une clé étrangère
 
-        serializer = CanalTelegramSerializer(data=data)
+        serializer = CanalTelegramSerializer(data=data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -63,6 +64,8 @@ class CanalAcheterView(APIView):
 # la liste des cannaux
 
 class CanalListView(APIView):
+
+    permission_classes = [IsAuthenticated]  # Accessible à tous les utilisateurs
     def get(self, request):
         # Récupérer tous les canaux
         canaux = CanalTelegram.objects.all()
